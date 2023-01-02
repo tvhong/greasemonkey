@@ -15,7 +15,7 @@
 
 function addStyle() {
   const CSS_STYLE = `
-    #myContainer {
+    #kbm-container {
         position:               absolute;
         top:                    0;
         left:                   0;
@@ -27,10 +27,10 @@ function addStyle() {
         z-index:                1100;
         padding:                5px 20px;
     }
-    #myButton {
+    #kbm-clean-highlights {
         cursor:                 pointer;
     }
-    #myContainer p {
+    #kbm-container p {
         color:                  red;
         background:             white;
     }
@@ -46,36 +46,38 @@ function addStyle() {
 }
 
 
-function addButton() {  
-  var zNode       = document.createElement('div');
-  zNode.innerHTML = '<button id="myButton" type="button">'
-                  + 'For Pete\'s sake, don\'t click me!</button>'
-                  ;
-  zNode.setAttribute('id', 'myContainer');
-  document.body.appendChild(zNode);
+function addDeleteButtons() {  
+  let container = document.createElement('div');
+  container.id = 'kbm-container';
+  document.body.appendChild(container);
+  
+  let cleanHighlightsBtn = document.createElement('button');
+  cleanHighlightsBtn.id = 'kbm-clean-highlights';
+  cleanHighlightsBtn.type = 'button';
+  cleanHighlightsBtn.innerHTML = 'Clean highlights';
+  container.appendChild(cleanHighlightsBtn);
 
-  //--- Activate the newly added button.
-  document.getElementById("myButton").addEventListener (
-      "click", ButtonClickAction, false
+  document.getElementById("kbm-clean-highlights").addEventListener(
+      "click", cleanHighlights, false
   );
 }
 
-function ButtonClickAction(zEvent) {
-  /*--- For our dummy action, we'll just add a line of text to the top
-          of the screen.
-      */
+function cleanHighlights(zEvent) {
   var zNode = document.createElement('p');
   zNode.innerHTML = 'The button was clicked.';
-  document.getElementById("myContainer").appendChild(zNode);
+  document.getElementById("kbm-container").appendChild(zNode);
 }
-
 
 function getOptionElements() {
   const nodes = document.querySelectorAll(`[id^="popover-"]`);
   const elements = Array.from(nodes).filter(e => e.textContent === "Options" && e.tagName === "A");
 
   console.log(elements); // 👉️ [div#box1]
+  console.log("POOP");
 }
 
+
+console.log("POOP1")
 addStyle()
-addButton()
+addDeleteButtons()
+console.log("POOP2")
