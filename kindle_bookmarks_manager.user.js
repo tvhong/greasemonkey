@@ -8,7 +8,8 @@
 
 // TODOs:
 // v Query all Options button
-// x Create a button to trigger event when clicked
+// v Create a button to trigger event when clicked
+// x Add confirmation before clicking
 // x Add highlight removal
 // x Add note removal
 // x Add ability to extract notes so that we can import to Anki
@@ -16,26 +17,26 @@
 function addStyle() {
   const CSS_STYLE = `
     #kbm-container {
-        position:               absolute;
-        top:                    0;
-        left:                   0;
-        font-size:              20px;
-        background:             orange;
-        border:                 3px outset black;
-        margin:                 5px;
-        opacity:                0.9;
-        z-index:                1100;
-        padding:                5px 20px;
+      position:               absolute;
+      top:                    0;
+      left:                   0;
+      font-size:              20px;
+      background:             orange;
+      border:                 3px outset black;
+      margin:                 5px;
+      opacity:                0.9;
+      z-index:                1100;
+      padding:                5px 20px;
     }
     #kbm-clean-highlights {
-        cursor:                 pointer;
+      cursor:                 pointer;
     }
     #kbm-container p {
-        color:                  red;
-        background:             white;
+      color:                  red;
+      background:             white;
     }
 `;
-  
+
   const head = document.getElementsByTagName('head')[0];
   if (head) {
     const style = document.createElement('style');
@@ -46,20 +47,25 @@ function addStyle() {
 }
 
 
-function addDeleteButtons() {  
+function addKbmContainer() {
   let container = document.createElement('div');
   container.id = 'kbm-container';
   document.body.appendChild(container);
-  
-  let cleanHighlightsBtn = document.createElement('button');
-  cleanHighlightsBtn.id = 'kbm-clean-highlights';
-  cleanHighlightsBtn.type = 'button';
-  cleanHighlightsBtn.innerHTML = 'Clean highlights';
-  container.appendChild(cleanHighlightsBtn);
 
-  document.getElementById("kbm-clean-highlights").addEventListener(
+  let cleanHighlightsBtn = getCleanHighlightsBtn();
+  container.appendChild(cleanHighlightsBtn);
+}
+
+function getCleanHighlightsBtn() {
+  let node = document.createElement('button');
+  node.id = 'kbm-clean-highlights';
+  node.type = 'button';
+  node.innerHTML = 'Clean highlights';
+  node.addEventListener(
       "click", cleanHighlights, false
   );
+
+  return node;
 }
 
 function cleanHighlights(zEvent) {
@@ -78,6 +84,6 @@ function getOptionElements() {
 
 
 console.log("POOP1")
-addStyle()
-addDeleteButtons()
+addStyle();
+addKbmContainer();
 console.log("POOP2")
