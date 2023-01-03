@@ -19,6 +19,7 @@
 // x Add ability to extract notes so that we can import to Anki
 
 const CMD_CLEAN_ALL = 'clean-all';
+const CSRF_TOKEN = 'foo';
 
 function addStyle() {
   const CSS_STYLE = `
@@ -109,18 +110,17 @@ function deleteAll() {
 }
 
 function deleteHighlights() {
+  const highlightIds = getHighlights();
+  deleteHighlight(highlightIds[0]);
 }
 
 function deleteNotes() {
   const noteIds = getNotes();
-  deleteNote(noteIds[1]);
+  deleteNote(noteIds[0]);
+//   if (noteIds.length > 0) {
+//     noteIds.forEach(nid -> deleteNote(nid));
+//   }
 }
-
-function print(message) {
-  const node = document.getElementById('kbm-stdout');
-  node.innerHTML += '<br />' + message;
-}
-
 
 function getHighlights() {
   const nodes = document.querySelectorAll(`[id^="highlight-"]`);
@@ -137,20 +137,34 @@ function getNotes() {
 // TODO: function getIds(prefix)
 
 function deleteNote(noteId) {
-  const deleteNoteUrl = 'https://read.amazon.com/notebook/note?noteId=' + noteId + '&';
+  const itemUrl = 'https://read.amazon.com/notebook/note?noteId=' + noteId;
+  deleteItem(itemUrl);
+}
+
+function deleteHighlight(highlightId) {
+  const itemUrl = 'https://read.amazon.com/notebook/highlight?highlightId=' + highlightId;
+  deleteItem(itemUrl);
+}
+
+function deleteItem(itemUrl) {
   GM.xmlHttpRequest({
     method: 'DELETE',
-    url: deleteNoteUrl,
+    url: itemUrl,
     headers: {
       'Origin': "https://read.amazon.com",
       'Referrer': "https://read.amazon.com/notebook",
-      'anti-csrftoken-a2z': "foo",
+      'anti-csrftoken-a2z': CSRF_TOKEN,
     },
     onload: function(response) {
       console.log(response);
-      console.log("Deleted note " + noteId);
+      console.log("Deleted [" + itemUrl + "]");
     }
   });
+}
+
+function print(message) {
+  const node = document.getElementById('kbm-stdout');
+  node.innerHTML += '<br />' + message;
 }
 
 addStyle();
