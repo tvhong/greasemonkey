@@ -4,6 +4,7 @@
 // @version     0.1
 // @match       *://read.amazon.com/notebook
 // @grant       GM_addStyle
+// @grant       GM.xmlHttpRequest
 // ==/UserScript==
 
 // TODOs:
@@ -96,11 +97,23 @@ function handleSubmit(event) {
   const cmd = document.getElementById('kbm-command').value;
   if (cmd === CMD_CLEAN_ALL) {
     print(CMD_CLEAN_ALL + ": Cleaning all highlights and notes");
-    print(getHighlights() + "");
-    print(getNotes() + "");
+    deleteAll();
   } else {
     print("Unknown command");
   }
+}
+
+function deleteAll() {
+  deleteHighlights();
+  deleteNotes();
+}
+
+function deleteHighlights() {
+}
+
+function deleteNotes() {
+  const noteIds = getNotes();
+  deleteNote(noteIds[1]);
 }
 
 function print(message) {
@@ -116,9 +129,35 @@ function getHighlights() {
 }
 
 function getNotes() {
-  const nodes = document.querySelectorAll(`[id^="note-"]`);
+  const nodes = document.querySelectorAll(`[id^="note-QTF"]`);
   const ids = Array.from(nodes).map(n => n.id.replace('note-', ''));
   return ids;
+}
+
+// TODO: function getIds(prefix)
+
+function deleteNote(noteId) {
+  console.log("POOP");
+  const deleteNoteUrl = 'https://read.amazon.com/notebook/note?noteId=' + noteId + '&';
+  GM.xmlHttpRequest({
+    method: 'DELETE',
+    url: deleteNoteUrl,
+    headers: {
+      origin: "https://read.amazon.com",
+      referrer : "https://read.amazon.com/notebook",
+      Accept: "*/*",
+//       Accept-Encoding: "gzip, deflate, br",
+//      anti-csrftoken-a2z: "hKlboQlMkBFwjCtK9nZIxpJ4jbwhXuEJQfVr3LYi73HGAAAAAGOzgOsAAAAB"
+    },
+    onload: function(response) {
+    console.log(response);
+      console.log("Deleted note " + noteId);
+    },
+    onerror: function(response) {
+      console.log("Error: " + response);
+    }
+  });
+  console.log("POOP2");
 }
 
 addStyle();
