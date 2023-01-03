@@ -66,7 +66,7 @@ function getCommandNode() {
   let node  = document.createElement('input');
   node.id = 'kbm-command';
   node.setAttribute('type', 'text');
-  node.setAttribute('placeholder', CMD_CLEAN_ALL);
+  //node.setAttribute('placeholder', CMD_CLEAN_ALL);
   node.onkeydown = function(e) {
     if(e.keyCode == 13){
        handleSubmit(e);
@@ -89,32 +89,37 @@ function getSubmitNode() {
 function getStdoutNode() {
   const node = document.createElement('p');
   node.id = 'kbm-stdout';
-  node.innerHTML = "Latest message will be displayed here";
   return node;
 }
 
 function handleSubmit(event) {
   const cmd = document.getElementById('kbm-command').value;
   if (cmd === CMD_CLEAN_ALL) {
-    showMessage(CMD_CLEAN_ALL + ": Cleaning all highlights and notes");
+    print(CMD_CLEAN_ALL + ": Cleaning all highlights and notes");
+    print(getHighlights() + "");
+    print(getNotes() + "");
   } else {
-    showMessage("Unknown command");
+    print("Unknown command");
   }
 }
 
-function showMessage(message) {
+function print(message) {
   const node = document.getElementById('kbm-stdout');
   node.innerHTML += '<br />' + message;
 }
 
 
-function getOptionElements() {
-  const nodes = document.querySelectorAll(`[id^="popover-"]`);
-  const elements = Array.from(nodes).filter(e => e.textContent === "Options" && e.tagName === "A");
-
-  console.log(elements);
+function getHighlights() {
+  const nodes = document.querySelectorAll(`[id^="highlight-"]`);
+  const ids = Array.from(nodes).map(n => n.id.replace('highlight-', ''));
+  return ids;
 }
 
+function getNotes() {
+  const nodes = document.querySelectorAll(`[id^="note-"]`);
+  const ids = Array.from(nodes).map(n => n.id.replace('note-', ''));
+  return ids;
+}
 
 addStyle();
 addContainer();
