@@ -52,17 +52,26 @@ function addKbmContainer() {
   container.id = 'kbm-container';
   document.body.appendChild(container);
 
-  let cleanHighlightsBtn = getCleanHighlightsBtn();
-  container.appendChild(cleanHighlightsBtn);
+  container.appendChild(getCommandNode());
+  container.appendChild(getCleanHighlightsNode());
 }
 
-function getCleanHighlightsBtn() {
+function getCommandNode() {
+  let node  = document.createElement('input');
+  node.id = 'kbm-command';
+  node.setAttribute('type', 'text');
+  node.setAttribute('placeholder', 'clean-hls, clean-notes, clean-all');
+
+  return node;
+}
+
+function getCleanHighlightsNode() {
   let node = document.createElement('button');
   node.id = 'kbm-clean-highlights';
-  node.type = 'button';
+  node.setAttribute('type', 'button');
   node.innerHTML = 'Clean highlights';
   node.addEventListener(
-      "click", cleanHighlights, false
+      'click', cleanHighlights, false
   );
 
   return node;
@@ -73,6 +82,7 @@ function cleanHighlights(zEvent) {
   zNode.innerHTML = 'The button was clicked.';
   document.getElementById("kbm-container").appendChild(zNode);
 }
+
 
 function getOptionElements() {
   const nodes = document.querySelectorAll(`[id^="popover-"]`);
