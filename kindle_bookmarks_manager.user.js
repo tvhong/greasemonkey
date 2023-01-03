@@ -10,9 +10,10 @@
 // v Query all Options button
 // v Create a button to trigger event when clicked
 // v Add confirmation before clicking
-// x Remove highlights
-// x Remove notes
-// x Allow enter to submit
+// x Remove 1 highlight
+// x Remove 1 note
+// x Remove all highlights & notes
+// v Allow enter to submit
 // x Re-style
 // x Add ability to extract notes so that we can import to Anki
 
@@ -66,6 +67,11 @@ function getCommandNode() {
   node.id = 'kbm-command';
   node.setAttribute('type', 'text');
   node.setAttribute('placeholder', CMD_CLEAN_ALL);
+  node.onkeydown = function(e) {
+    if(e.keyCode == 13){
+       handleSubmit(e);
+    }
+  }
 
   return node;
 }
@@ -77,6 +83,13 @@ function getSubmitNode() {
   node.innerHTML = 'Submit';
   node.addEventListener('click', handleSubmit, false);
 
+  return node;
+}
+
+function getStdoutNode() {
+  const node = document.createElement('p');
+  node.id = 'kbm-stdout';
+  node.innerHTML = "Latest message will be displayed here";
   return node;
 }
 
@@ -99,18 +112,9 @@ function getOptionElements() {
   const nodes = document.querySelectorAll(`[id^="popover-"]`);
   const elements = Array.from(nodes).filter(e => e.textContent === "Options" && e.tagName === "A");
 
-  console.log(elements); // 👉️ [div#box1]
-  console.log("POOP");
+  console.log(elements);
 }
 
-function getStdoutNode() {
-  const node = document.createElement('p');
-  node.id = 'kbm-stdout';
-  node.innerHTML = "Latest message will be displayed here";
-  return node;
-}
 
-console.log("POOP1")
 addStyle();
 addContainer();
-console.log("POOP2")
