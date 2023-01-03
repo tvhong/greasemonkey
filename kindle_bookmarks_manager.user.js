@@ -15,9 +15,9 @@
 // v Remove 1 note
 // v Remove all highlights & notes
 // v Allow enter to submit
-// x Re-style
-// x automatically get csrf token
+// x Automatically get the csrf token
 // x Add ability to extract notes so that we can import to Anki
+// v Re-style
 
 const CMD_DELETE_ALL = 'delete-all';
 const CSRF_TOKEN = 'foo';
@@ -29,7 +29,7 @@ function addStyle() {
       top:                    0;
       left:                   0;
       font-size:              20px;
-      background:             orange;
+      background:             black;
       border:                 3px outset black;
       margin:                 5px;
       opacity:                0.9;
@@ -40,8 +40,8 @@ function addStyle() {
       cursor:                 pointer;
     }
     #kbm-container p {
-      color:                  red;
-      background:             white;
+      color:                  white;
+      background:             black;
     }
 `;
 
@@ -91,6 +91,7 @@ function getSubmitNode() {
 function getStdoutNode() {
   const node = document.createElement('p');
   node.id = 'kbm-stdout';
+  node.innerHTML = "Available commands: " + CMD_DELETE_ALL;
   return node;
 }
 
