@@ -11,11 +11,12 @@
 // v Query all Options button
 // v Create a button to trigger event when clicked
 // v Add confirmation before clicking
-// x Remove 1 highlight
-// x Remove 1 note
-// x Remove all highlights & notes
+// v Remove 1 highlight
+// v Remove 1 note
+// v Remove all highlights & notes
 // v Allow enter to submit
 // x Re-style
+// x automatically get csrf token
 // x Add ability to extract notes so that we can import to Anki
 
 const CMD_CLEAN_ALL = 'clean-all';
@@ -97,7 +98,6 @@ function getStdoutNode() {
 function handleSubmit(event) {
   const cmd = document.getElementById('kbm-command').value;
   if (cmd === CMD_CLEAN_ALL) {
-    print(CMD_CLEAN_ALL + ": Cleaning all highlights and notes");
     deleteAll();
   } else {
     print("Unknown command");
@@ -105,21 +105,23 @@ function handleSubmit(event) {
 }
 
 function deleteAll() {
+  print("Removing highlights...");
   deleteHighlights();
+  print("Done!");
+
+  print("Removing notes...");
   deleteNotes();
+  print("Done!");
 }
 
 function deleteHighlights() {
   const highlightIds = getHighlights();
-  deleteHighlight(highlightIds[0]);
+  highlightIds.forEach(hlid => deleteHighlight(hlid));
 }
 
 function deleteNotes() {
   const noteIds = getNotes();
-  deleteNote(noteIds[0]);
-//   if (noteIds.length > 0) {
-//     noteIds.forEach(nid -> deleteNote(nid));
-//   }
+  noteIds.forEach(nid => deleteNote(nid));
 }
 
 function getHighlights() {
@@ -133,8 +135,6 @@ function getNotes() {
   const ids = Array.from(nodes).map(n => n.id.replace('note-', ''));
   return ids;
 }
-
-// TODO: function getIds(prefix)
 
 function deleteNote(noteId) {
   const itemUrl = 'https://read.amazon.com/notebook/note?noteId=' + noteId;
@@ -169,3 +169,4 @@ function print(message) {
 
 addStyle();
 addContainer();
+
