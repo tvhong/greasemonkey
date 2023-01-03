@@ -137,27 +137,20 @@ function getNotes() {
 // TODO: function getIds(prefix)
 
 function deleteNote(noteId) {
-  console.log("POOP");
   const deleteNoteUrl = 'https://read.amazon.com/notebook/note?noteId=' + noteId + '&';
   GM.xmlHttpRequest({
     method: 'DELETE',
     url: deleteNoteUrl,
     headers: {
-      origin: "https://read.amazon.com",
-      referrer : "https://read.amazon.com/notebook",
-      Accept: "*/*",
-//       Accept-Encoding: "gzip, deflate, br",
-//      anti-csrftoken-a2z: "hKlboQlMkBFwjCtK9nZIxpJ4jbwhXuEJQfVr3LYi73HGAAAAAGOzgOsAAAAB"
+      'Origin': "https://read.amazon.com",
+      'Referrer': "https://read.amazon.com/notebook",
+      'anti-csrftoken-a2z': "foo",
     },
     onload: function(response) {
-    console.log(response);
+      console.log(response);
       console.log("Deleted note " + noteId);
-    },
-    onerror: function(response) {
-      console.log("Error: " + response);
     }
   });
-  console.log("POOP2");
 }
 
 addStyle();
