@@ -9,10 +9,14 @@
 // TODOs:
 // v Query all Options button
 // v Create a button to trigger event when clicked
-// x Add confirmation before clicking
-// x Add highlight removal
-// x Add note removal
+// v Add confirmation before clicking
+// x Remove highlights
+// x Remove notes
+// x Allow enter to submit
+// x Re-style
 // x Add ability to extract notes so that we can import to Anki
+
+const CMD_CLEAN_ALL = 'clean-all';
 
 function addStyle() {
   const CSS_STYLE = `
@@ -28,7 +32,7 @@ function addStyle() {
       z-index:                1100;
       padding:                5px 20px;
     }
-    #kbm-clean-highlights {
+    #kbm-submit {
       cursor:                 pointer;
     }
     #kbm-container p {
@@ -47,40 +51,47 @@ function addStyle() {
 }
 
 
-function addKbmContainer() {
+function addContainer() {
   let container = document.createElement('div');
   container.id = 'kbm-container';
   document.body.appendChild(container);
 
   container.appendChild(getCommandNode());
-  container.appendChild(getCleanHighlightsNode());
+  container.appendChild(getSubmitNode());
+  container.appendChild(getStdoutNode());
 }
 
 function getCommandNode() {
   let node  = document.createElement('input');
   node.id = 'kbm-command';
   node.setAttribute('type', 'text');
-  node.setAttribute('placeholder', 'clean-hls, clean-notes, clean-all');
+  node.setAttribute('placeholder', CMD_CLEAN_ALL);
 
   return node;
 }
 
-function getCleanHighlightsNode() {
+function getSubmitNode() {
   let node = document.createElement('button');
-  node.id = 'kbm-clean-highlights';
+  node.id = 'kbm-submit';
   node.setAttribute('type', 'button');
-  node.innerHTML = 'Clean highlights';
-  node.addEventListener(
-      'click', cleanHighlights, false
-  );
+  node.innerHTML = 'Submit';
+  node.addEventListener('click', handleSubmit, false);
 
   return node;
 }
 
-function cleanHighlights(zEvent) {
-  var zNode = document.createElement('p');
-  zNode.innerHTML = 'The button was clicked.';
-  document.getElementById("kbm-container").appendChild(zNode);
+function handleSubmit(event) {
+  const cmd = document.getElementById('kbm-command').value;
+  if (cmd === CMD_CLEAN_ALL) {
+    showMessage(CMD_CLEAN_ALL + ": Cleaning all highlights and notes");
+  } else {
+    showMessage("Unknown command");
+  }
+}
+
+function showMessage(message) {
+  const node = document.getElementById('kbm-stdout');
+  node.innerHTML += '<br />' + message;
 }
 
 
@@ -92,8 +103,14 @@ function getOptionElements() {
   console.log("POOP");
 }
 
+function getStdoutNode() {
+  const node = document.createElement('p');
+  node.id = 'kbm-stdout';
+  node.innerHTML = "Latest message will be displayed here";
+  return node;
+}
 
 console.log("POOP1")
 addStyle();
-addKbmContainer();
+addContainer();
 console.log("POOP2")
