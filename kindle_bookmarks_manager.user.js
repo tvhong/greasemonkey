@@ -19,7 +19,7 @@
 // x automatically get csrf token
 // x Add ability to extract notes so that we can import to Anki
 
-const CMD_CLEAN_ALL = 'clean-all';
+const CMD_DELETE_ALL = 'delete-all';
 const CSRF_TOKEN = 'foo';
 
 function addStyle() {
@@ -69,7 +69,6 @@ function getCommandNode() {
   let node  = document.createElement('input');
   node.id = 'kbm-command';
   node.setAttribute('type', 'text');
-  //node.setAttribute('placeholder', CMD_CLEAN_ALL);
   node.onkeydown = function(e) {
     if(e.keyCode == 13){
        handleSubmit(e);
@@ -97,7 +96,7 @@ function getStdoutNode() {
 
 function handleSubmit(event) {
   const cmd = document.getElementById('kbm-command').value;
-  if (cmd === CMD_CLEAN_ALL) {
+  if (cmd === CMD_DELETE_ALL) {
     deleteAll();
   } else {
     print("Unknown command");
@@ -105,11 +104,11 @@ function handleSubmit(event) {
 }
 
 function deleteAll() {
-  print("Removing highlights...");
+  print("Deleting highlights...");
   deleteHighlights();
   print("Done!");
 
-  print("Removing notes...");
+  print("Deleting notes...");
   deleteNotes();
   print("Done!");
 }
@@ -169,4 +168,3 @@ function print(message) {
 
 addStyle();
 addContainer();
-
