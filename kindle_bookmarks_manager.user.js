@@ -157,7 +157,7 @@ function deleteItem(itemUrl) {
     },
     onload: function(response) {
       console.log(response);
-      console.log("Deleted [" + itemUrl + "]");
+      console.log("Delete [" + response.status + "] [" + itemUrl + "]");
     }
   });
 }
