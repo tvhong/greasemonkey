@@ -66,12 +66,14 @@ function getDeleteHighlightsButton() {
 function getStdoutNode() {
   const node = document.createElement('p');
   node.id = 'kbm-stdout';
-  node.innerHTML = "Available commands: " + CMD_DELETE_ALL;
   return node;
 }
 
 function handleDeleteHighlights(event) {
-  deleteAll();
+  var result = confirm("Do you want to remove X highlights and Y notes from \"TBD\"?");
+  if (result == true) {
+    deleteAll();
+  }
 }
 
 function deleteAll() {
