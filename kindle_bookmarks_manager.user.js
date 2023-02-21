@@ -1,23 +1,11 @@
 // ==UserScript==
 // @name        Kindle Bookmarks Manager
 // @description Manage Kindle Bookmarks (e.g. Extract bookmarks to Anki deck, delete all bookmarks)
-// @version     0.1
-// @match       *://read.amazon.com/notebook
+// @version     0.2
+// @match       https://read.amazon.com/notebook
 // @grant       GM_addStyle
 // @grant       GM.xmlHttpRequest
 // ==/UserScript==
-
-// TODOs:
-// v Query all Options button
-// v Create a button to trigger event when clicked
-// v Add confirmation before clicking
-// v Remove 1 highlight
-// v Remove 1 note
-// v Remove all highlights & notes
-// v Allow enter to submit
-// x Automatically get the csrf token
-// x Add ability to extract notes so that we can import to Anki
-// v Re-style
 
 const CMD_DELETE_ALL = 'delete-all';
 const CSRF_TOKEN = 'foo';
@@ -58,11 +46,11 @@ function addStyle() {
 function addContainer() {
   let container = document.createElement('div');
   container.id = 'kbm-container';
-  document.body.appendChild(container);
-
   container.appendChild(getCommandNode());
   container.appendChild(getSubmitNode());
   container.appendChild(getStdoutNode());
+
+  document.body.getElementById('annotations').appendChild(container);
 }
 
 function getCommandNode() {
