@@ -8,7 +8,6 @@
 // @grant       GM.xmlHttpRequest
 // ==/UserScript==
 
-const CMD_DELETE_ALL = 'delete-all';
 const CSRF_TOKEN = 'foo';
 
 function addStyle() {
@@ -25,7 +24,7 @@ function addStyle() {
       z-index: 1100;
       padding: 5px 20px;
     }
-    #kbm-submit {
+    .kbm-btn {
       cursor: pointer;
     }
     #kbm-container p {
@@ -48,7 +47,6 @@ function addContainer() {
   let container = document.createElement('div');
   container.id = 'kbm-container';
   container.appendChild(getDeleteHighlightsButton())
-  container.appendChild(getSubmitNode());
   container.appendChild(getStdoutNode());
 
   document.getElementById('annotations').appendChild(container);
@@ -60,16 +58,7 @@ function getDeleteHighlightsButton() {
   node.setAttribute('type', 'button');
   node.innerHTML = 'Delete Highlights';
   node.addEventListener('click', handleDeleteHighlights, false);
-
-  return node;
-}
-
-function getSubmitNode() {
-  let node = document.createElement('button');
-  node.id = 'kbm-submit';
-  node.setAttribute('type', 'button');
-  node.innerHTML = 'Submit';
-  node.addEventListener('click', handleSubmit, false);
+  node.classList.add('kbm-btn');
 
   return node;
 }
@@ -82,16 +71,7 @@ function getStdoutNode() {
 }
 
 function handleDeleteHighlights(event) {
-  print("Poop")
-}
-
-function handleSubmit(event) {
-  const cmd = document.getElementById('kbm-command').value;
-  if (cmd === CMD_DELETE_ALL) {
-    deleteAll();
-  } else {
-    print("Unknown command");
-  }
+  deleteAll();
 }
 
 function deleteAll() {
