@@ -47,11 +47,22 @@ function addStyle() {
 function addContainer() {
   let container = document.createElement('div');
   container.id = 'kbm-container';
+  container.appendChild(getDeleteHighlightsButton())
   container.appendChild(getCommandNode());
   container.appendChild(getSubmitNode());
   container.appendChild(getStdoutNode());
 
   document.getElementById('annotations').appendChild(container);
+}
+
+function getDeleteHighlightsButton() {
+  let node = document.createElement('button');
+  node.id = 'kbm-delete-highlights';
+  node.setAttribute('type', 'button');
+  node.innerHTML = 'Delete Highlights';
+  node.addEventListener('click', handleDeleteHighlights, false);
+
+  return node;
 }
 
 function getCommandNode() {
@@ -82,6 +93,10 @@ function getStdoutNode() {
   node.id = 'kbm-stdout';
   node.innerHTML = "Available commands: " + CMD_DELETE_ALL;
   return node;
+}
+
+function handleDeleteHighlights(event) {
+  print("Poop")
 }
 
 function handleSubmit(event) {
