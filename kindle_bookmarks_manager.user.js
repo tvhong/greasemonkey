@@ -1,4 +1,5 @@
 // ==UserScript==
+// @namespace   https://github.com/tvhong/greasemonkey
 // @name        Kindle Bookmarks Manager
 // @description Manage Kindle Bookmarks (e.g. Extract bookmarks to Anki deck, delete all bookmarks)
 // @version     0.2
