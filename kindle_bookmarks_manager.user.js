@@ -14,23 +14,23 @@ const CSRF_TOKEN = 'foo';
 function addStyle() {
   const CSS_STYLE = `
     #kbm-container {
-      position:               absolute;
-      top:                    0;
-      left:                   0;
-      font-size:              20px;
-      background:             black;
-      border:                 3px outset black;
-      margin:                 5px;
-      opacity:                0.9;
-      z-index:                1100;
-      padding:                5px 20px;
+      position: absolute;
+      top: 0;
+      right: 0;
+      font-size: 20px;
+      background: black;
+      border: 3px outset black;
+      margin: 5px;
+      opacity: 0.9;
+      z-index: 1100;
+      padding: 5px 20px;
     }
     #kbm-submit {
-      cursor:                 pointer;
+      cursor: pointer;
     }
     #kbm-container p {
-      color:                  white;
-      background:             black;
+      color: white;
+      background: black;
     }
 `;
 
@@ -51,7 +51,7 @@ function addContainer() {
   container.appendChild(getSubmitNode());
   container.appendChild(getStdoutNode());
 
-  document.body.getElementById('annotations').appendChild(container);
+  document.getElementById('annotations').appendChild(container);
 }
 
 function getCommandNode() {
