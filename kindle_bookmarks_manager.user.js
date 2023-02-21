@@ -48,7 +48,6 @@ function addContainer() {
   let container = document.createElement('div');
   container.id = 'kbm-container';
   container.appendChild(getDeleteHighlightsButton())
-  container.appendChild(getCommandNode());
   container.appendChild(getSubmitNode());
   container.appendChild(getStdoutNode());
 
@@ -61,19 +60,6 @@ function getDeleteHighlightsButton() {
   node.setAttribute('type', 'button');
   node.innerHTML = 'Delete Highlights';
   node.addEventListener('click', handleDeleteHighlights, false);
-
-  return node;
-}
-
-function getCommandNode() {
-  let node  = document.createElement('input');
-  node.id = 'kbm-command';
-  node.setAttribute('type', 'text');
-  node.onkeydown = function(e) {
-    if(e.keyCode == 13){
-       handleSubmit(e);
-    }
-  }
 
   return node;
 }
