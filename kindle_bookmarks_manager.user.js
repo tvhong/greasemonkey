@@ -81,23 +81,41 @@ function getCurrentBookTitle() {
 }
 
 function deleteAll() {
-  print("Deleting highlights...");
-  deleteHighlights();
-  print("Done!");
+  print("Sending highlight deletion requests...");
+  const highlight_deletion_promises = deleteHighlights();
 
-  print("Deleting notes...");
-  deleteNotes();
-  print("Done!");
+  print("Sending note deletion requests...");
+  const note_deletion_promises = deleteNotes();
+
+  Promise.allSettled(highlight_deletion_promises)
+    .then(results => {
+      const success_results = results.filter(r => r.status === 'fulfilled');
+      const success_200_results = success_results.filter(r => r.value[1] === 200);
+      const success_other_results = success_results.filter(r => r.value[1] !== 200);
+      const success_other_results_str = success_other_results.map(r => `${r.value[0]}[${r.value[1]}]`)
+      const failure_results = results.filter(r => r.status === 'rejected');
+      const failure_results_str = failure_results.map(r => `${r.value[0]}[error: ${r.value[1]}]`);
+      print("Highlight deletion report:");
+      print(`* Success: ${success_results.length}`)
+      print(`* Success with 200 status: ${success_200_results.length}`)
+      print(`* Success with other status: ${success_other_results.length}`)
+      success_other_results_str.forEach(s => print(`** ${s}`))
+
+      print(`* Failure: ${failure_results.length}`)
+      failure_results_str.forEach(s => print(`** ${s}`))
+    });
 }
 
 function deleteHighlights() {
   const highlightIds = getHighlights();
-  highlightIds.forEach(hlid => deleteHighlight(hlid));
+  const promises = highlightIds.map(id => deleteHighlight(id));
+  return promises;
 }
 
 function deleteNotes() {
   const noteIds = getNotes();
-  noteIds.forEach(nid => deleteNote(nid));
+  const promises = noteIds.map(id => deleteNote(id));
+  return promises;
 }
 
 function getHighlights() {
@@ -114,27 +132,31 @@ function getNotes() {
 
 function deleteNote(noteId) {
   const itemUrl = 'https://read.amazon.com/notebook/note?noteId=' + noteId;
-  deleteItem(itemUrl);
+  return deleteItem(itemUrl);
 }
 
 function deleteHighlight(highlightId) {
   const itemUrl = 'https://read.amazon.com/notebook/highlight?highlightId=' + highlightId;
-  deleteItem(itemUrl);
+  return deleteItem(itemUrl);
 }
 
 function deleteItem(itemUrl) {
-  GM.xmlHttpRequest({
-    method: 'DELETE',
-    url: itemUrl,
-    headers: {
-      'Origin': "https://read.amazon.com",
-      'Referrer': "https://read.amazon.com/notebook",
-      'anti-csrftoken-a2z': CSRF_TOKEN,
-    },
-    onload: function(response) {
-      console.log(response);
-      console.log("Delete [" + response.status + "] [" + itemUrl + "]");
-    }
+  return new Promise((resolve, reject) => {
+    GM.xmlHttpRequest({
+      method: 'DELETE',
+      url: itemUrl,
+      headers: {
+        'Origin': "https://read.amazon.com",
+        'Referrer': "https://read.amazon.com/notebook",
+        'anti-csrftoken-a2z': CSRF_TOKEN,
+      },
+      onload: function(response) {
+        resolve([itemUrl, response.status]);
+      },
+      onerror: function(error) {
+        reject([itemUrl, error]);
+      }
+    });
   });
 }
 
