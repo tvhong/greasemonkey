@@ -24,12 +24,12 @@ function addStyle() {
       z-index: 1100;
       padding: 5px 20px;
     }
-    .kbm-btn {
-      cursor: pointer;
-    }
     #kbm-container p {
       color: white;
       background: black;
+    }
+    .kbm-btn {
+      cursor: pointer;
     }
 `;
 
@@ -47,7 +47,7 @@ function addContainer() {
   let container = document.createElement('div');
   container.id = 'kbm-container';
   container.appendChild(getDeleteHighlightsButton())
-  container.appendChild(getStdoutNode());
+  container.appendChild(getStdoutArea());
 
   document.getElementById('annotations').appendChild(container);
 }
@@ -63,7 +63,7 @@ function getDeleteHighlightsButton() {
   return node;
 }
 
-function getStdoutNode() {
+function getStdoutArea() {
   const node = document.createElement('p');
   node.id = 'kbm-stdout';
   return node;
