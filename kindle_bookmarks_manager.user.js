@@ -89,20 +89,19 @@ function deleteAll() {
 
   Promise.allSettled(highlight_deletion_promises)
     .then(results => {
-      const success_results = results.filter(r => r.status === 'fulfilled');
-      const success_200_results = success_results.filter(r => r.value[1] === 200);
-      const success_other_results = success_results.filter(r => r.value[1] !== 200);
-      const success_other_results_str = success_other_results.map(r => `${r.value[0]}[${r.value[1]}]`)
-      const failure_results = results.filter(r => r.status === 'rejected');
-      const failure_results_str = failure_results.map(r => `${r.value[0]}[error: ${r.value[1]}]`);
       print("Highlight deletion report:");
-      print(`* Success: ${success_results.length}`)
-      print(`* Success with 200 status: ${success_200_results.length}`)
-      print(`* Success with other status: ${success_other_results.length}`)
-      success_other_results_str.forEach(s => print(`** ${s}`))
 
-      print(`* Failure: ${failure_results.length}`)
-      failure_results_str.forEach(s => print(`** ${s}`))
+      const successValues = results
+          .filter(r => r.status === 'fulfilled')
+          .map(r => r.value);
+      const resultsByStatusCode = groupBy(successValues, 1);
+      for (let status_code in resultsByStatusCode) {
+        print(`* Status [${status_code}]: ${resultsByStatusCode[status_code].length}`);
+      }
+
+      const failureResults = results.filter(r => r.status === 'rejected');
+      print(`* HTTP failures: ${failureResults.length}`)
+      failureResults.forEach(s => print(`** ${r.value[0]}[error: ${r.value[1]}]`))
     });
 }
 
@@ -164,6 +163,13 @@ function print(message) {
   const node = document.getElementById('kbm-stdout');
   node.innerHTML += '<br />' + message;
 }
+
+function groupBy(xs, key) {
+  return xs.reduce(function(rv, x) {
+    (rv[x[key]] = rv[x[key]] || []).push(x);
+    return rv;
+  }, {});
+};
 
 addStyle();
 addContainer();
