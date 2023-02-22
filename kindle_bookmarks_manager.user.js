@@ -8,7 +8,7 @@
 // @grant       GM.xmlHttpRequest
 // ==/UserScript==
 
-const CSRF_TOKEN = 'foo';
+let antiCsrfToken = '';
 
 function addStyle() {
   const CSS_STYLE = `
@@ -142,7 +142,7 @@ function deleteItem(itemUrl) {
       headers: {
         'Origin': "https://read.amazon.com",
         'Referrer': "https://read.amazon.com/notebook",
-        'anti-csrftoken-a2z': CSRF_TOKEN,
+        'anti-csrftoken-a2z': getAntiCsrfToken(),
       },
       onload: function(response) {
         resolve([itemUrl, response.status]);
@@ -152,6 +152,14 @@ function deleteItem(itemUrl) {
       }
     });
   });
+}
+
+function getAntiCsrfToken() {
+  if (!antiCsrfToken) {
+    antiCsrfToken = document.querySelector('input[name=anti-csrftoken-a2z]').getAttribute('value');
+  }
+
+  return antiCsrfToken
 }
 
 function reportHttpPromiseResults(results) {
