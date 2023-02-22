@@ -166,6 +166,9 @@ function reportHttpPromiseResults(results) {
   const failureResults = results.filter(r => r.status === 'rejected');
   print(`* HTTP failures: ${failureResults.length}`)
   failureResults.forEach(s => print(`** ${r.value[0]}[error: ${r.value[1]}]`))
+
+  console.log("Reporting HTTP promise results:");
+  console.log(results);
 }
 
 function print(message) {
