@@ -70,10 +70,14 @@ function getStdoutArea() {
 }
 
 function handleDeleteHighlights(event) {
-  var result = confirm("Do you want to remove X highlights and Y notes from \"TBD\"?");
+  var result = confirm(`Do you want to remove X highlights and Y notes from\n"${getCurrentBookTitle()}"?`);
   if (result == true) {
     deleteAll();
   }
+}
+
+function getCurrentBookTitle() {
+  return document.querySelector('h3.kp-notebook-metadata').innerText;
 }
 
 function deleteAll() {
