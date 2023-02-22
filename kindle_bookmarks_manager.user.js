@@ -80,20 +80,20 @@ function getCurrentBookTitle() {
   return document.querySelector('h3.kp-notebook-metadata').innerText;
 }
 
-function deleteAll() {
+async function deleteAll() {
   print("Sending highlights deletion requests...");
   const highlight_deletion_promises = deleteHighlights();
 
   print("Sending notes deletion requests...");
   const note_deletion_promises = deleteNotes();
 
-  Promise.allSettled(highlight_deletion_promises)
+  await Promise.allSettled(highlight_deletion_promises)
     .then(results => {
       print("Highlights deletion report:");
       reportHttpPromiseResults(results);
     });
 
-  Promise.allSettled(note_deletion_promises)
+  await Promise.allSettled(note_deletion_promises)
     .then(results => {
       print("Notes deletion report:");
       reportHttpPromiseResults(results);
