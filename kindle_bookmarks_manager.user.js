@@ -70,7 +70,7 @@ function getStdoutArea() {
 }
 
 function handleDeleteHighlights(event) {
-  var result = confirm(`Do you want to remove X highlights and Y notes from\n"${getCurrentBookTitle()}"?`);
+  var result = confirm(`Do you want to remove ${getHighlights().length} highlights and ${getNotes().length} notes from\n"${getCurrentBookTitle()}"?`);
   if (result == true) {
     deleteAll();
   }
