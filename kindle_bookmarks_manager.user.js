@@ -81,27 +81,22 @@ function getCurrentBookTitle() {
 }
 
 function deleteAll() {
-  print("Sending highlight deletion requests...");
+  print("Sending highlights deletion requests...");
   const highlight_deletion_promises = deleteHighlights();
 
-  print("Sending note deletion requests...");
+  print("Sending notes deletion requests...");
   const note_deletion_promises = deleteNotes();
 
   Promise.allSettled(highlight_deletion_promises)
     .then(results => {
-      print("Highlight deletion report:");
+      print("Highlights deletion report:");
+      reportHttpPromiseResults(results);
+    });
 
-      const successValues = results
-          .filter(r => r.status === 'fulfilled')
-          .map(r => r.value);
-      const resultsByStatusCode = groupBy(successValues, 1);
-      for (let status_code in resultsByStatusCode) {
-        print(`* Status [${status_code}]: ${resultsByStatusCode[status_code].length}`);
-      }
-
-      const failureResults = results.filter(r => r.status === 'rejected');
-      print(`* HTTP failures: ${failureResults.length}`)
-      failureResults.forEach(s => print(`** ${r.value[0]}[error: ${r.value[1]}]`))
+  Promise.allSettled(note_deletion_promises)
+    .then(results => {
+      print("Notes deletion report:");
+      reportHttpPromiseResults(results);
     });
 }
 
@@ -157,6 +152,20 @@ function deleteItem(itemUrl) {
       }
     });
   });
+}
+
+function reportHttpPromiseResults(results) {
+  const successValues = results
+      .filter(r => r.status === 'fulfilled')
+      .map(r => r.value);
+  const resultsByStatusCode = groupBy(successValues, 1);
+  for (let status_code in resultsByStatusCode) {
+    print(`* Status [${status_code}]: ${resultsByStatusCode[status_code].length}`);
+  }
+
+  const failureResults = results.filter(r => r.status === 'rejected');
+  print(`* HTTP failures: ${failureResults.length}`)
+  failureResults.forEach(s => print(`** ${r.value[0]}[error: ${r.value[1]}]`))
 }
 
 function print(message) {
