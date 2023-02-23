@@ -40,9 +40,11 @@ class UserInterface {
     }
   `;
 
+  #exporter;
   #deleter;
 
-  constructor(deleter) {
+  constructor(exporter, deleter) {
+    this.#exporter = exporter;
     this.#deleter = deleter;
   }
 
@@ -95,7 +97,7 @@ class UserInterface {
     node.id = 'kbm-btn-export';
     node.setAttribute('type', 'button');
     node.innerHTML = 'Export';
-    node.addEventListener('click', (event) => { }, false);
+    node.addEventListener('click', this.#exporter.handleEvent.bind(this.#exporter), false);
     node.classList.add('kbm-btn');
 
     return node;
@@ -129,12 +131,38 @@ class DataProvider {
     return ids;
   }
 
+  getNoteHighlightPairs() {
+    const pairs = [];
+
+    const pairNodes = document.querySelectorAll('div.kp-notebook-print-override');
+    for (const pairNode of pairNodes) {
+      const noteNode = pairNode.querySelector('#note');
+      const highlightNode = pairNode.querySelector('#highlight');
+      pairs.push([noteNode ? noteNode.innerText : '',
+                  highlightNode ? highlightNode.innerText : '']);
+    }
+
+    return pairs;
+  }
+
   getAntiCsrfToken() {
     if (!antiCsrfToken) {
       antiCsrfToken = document.querySelector('input[name=anti-csrftoken-a2z]').getAttribute('value');
     }
 
     return antiCsrfToken
+  }
+}
+
+class Exporter {
+  #dataProvider;
+  
+  constructor(dataProvider) {
+    this.#dataProvider = dataProvider;
+  }
+
+  handleEvent(event) {
+    console.log(this.#dataProvider.getNoteHighlightPairs());
   }
 }
 
@@ -248,7 +276,9 @@ function groupBy(xs, key) {
 };
 
 const dataProvider = new DataProvider();
+const exporter = new Exporter(dataProvider);
 const deleter = new Deleter(dataProvider);
-const ui = new UserInterface(deleter);
+
+const ui = new UserInterface(exporter, deleter);
 ui.addStyle();
 ui.addUi();
