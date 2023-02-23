@@ -195,23 +195,26 @@ class Deleter {
   }
 
   #deleteItem(itemUrl) {
+    const delayMs = Math.random() * 1000; // Sleep up to 1 s
     return new Promise((resolve, reject) => {
-      GM.xmlHttpRequest({
-        method: 'DELETE',
-        url: itemUrl,
-        headers: {
-          'Origin': "https://read.amazon.com",
-          'Referrer': "https://read.amazon.com/notebook",
-          'anti-csrftoken-a2z': this.dataProvider.getAntiCsrfToken(),
-        },
-        onload: function (response) {
-          resolve([itemUrl, response.status]);
-        },
-        onerror: function (error) {
-          reject([itemUrl, error]);
-        }
+      setTimeout(() => {
+        GM.xmlHttpRequest({
+          method: 'DELETE',
+          url: itemUrl,
+          headers: {
+            'Origin': "https://read.amazon.com",
+            'Referrer': "https://read.amazon.com/notebook",
+            'anti-csrftoken-a2z': this.dataProvider.getAntiCsrfToken(),
+          },
+          onload: function (response) {
+            resolve([itemUrl, response.status]);
+          },
+          onerror: function (error) {
+            reject([itemUrl, error]);
+          }
+        });
       });
-    });
+    }, delayMs);
   }
 
   #reportHttpPromiseResults(results) {
