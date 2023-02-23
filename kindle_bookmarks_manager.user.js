@@ -10,8 +10,9 @@
 
 let antiCsrfToken = '';
 
-function addStyle() {
-  const CSS_STYLE = `
+
+class UserInterface {
+  CSS_STYLE = `
     #kbm-container {
       position: absolute;
       top: 0;
@@ -37,14 +38,16 @@ function addStyle() {
       padding: 5px;
       margin: 7px;
     }
-`;
+  `;
 
-  const head = document.getElementsByTagName('head')[0];
-  if (head) {
-    const style = document.createElement('style');
-    style.setAttribute('type', 'text/css');
-    style.textContent = CSS_STYLE;
-    head.appendChild(style);
+  addStyle() {
+    const head = document.getElementsByTagName('head')[0];
+    if (head) {
+      const style = document.createElement('style');
+      style.setAttribute('type', 'text/css');
+      style.textContent = this.CSS_STYLE;
+      head.appendChild(style);
+    }
   }
 }
 
@@ -221,5 +224,6 @@ function groupBy(xs, key) {
   }, {});
 };
 
-addStyle();
+const ui = new UserInterface();
+ui.addStyle();
 addContainer();
