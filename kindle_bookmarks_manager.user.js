@@ -40,6 +40,12 @@ class UserInterface {
     }
   `;
 
+  deleter;
+
+  constructor(deleter) {
+    this.deleter = deleter;
+  }
+
   addStyle() {
     const head = document.getElementsByTagName('head')[0];
     if (head) {
@@ -48,6 +54,56 @@ class UserInterface {
       style.textContent = this.CSS_STYLE;
       head.appendChild(style);
     }
+  }
+
+  addContainer() {
+    let container = document.createElement('div');
+    container.id = 'kbm-container';
+    container.appendChild(this.getButtons());
+    container.appendChild(this.getStdoutArea());
+
+    document.getElementById('annotations').appendChild(container);
+  }
+
+  getButtons() {
+    const container = document.createElement('div');
+    container.id = 'kbm-btns';
+    container.appendChild(this.getDeleteButton())
+    container.appendChild(this.getExportButton())
+
+    return container;
+  }
+
+  getDeleteButton() {
+    let node = document.createElement('button');
+    node.id = 'kbm-btn-delete';
+    node.setAttribute('type', 'button');
+    node.innerHTML = 'Delete';
+    node.addEventListener('click', this.deleter.handleDeleteHighlights.bind(this.deleter), false);
+    node.classList.add('kbm-btn');
+
+    return node;
+  }
+
+  getExportButton() {
+    let node = document.createElement('button');
+    node.id = 'kbm-btn-export';
+    node.setAttribute('type', 'button');
+    node.innerHTML = 'Export';
+    node.addEventListener('click', (event) => { }, false);
+    node.classList.add('kbm-btn');
+
+    return node;
+  }
+
+  getStdoutArea() {
+    const textArea = document.createElement('p');
+    textArea.id = 'kbm-stdout';
+
+    const container = document.createElement('div');
+    container.appendChild(textArea);
+
+    return container;
   }
 }
 
@@ -154,55 +210,6 @@ class Deleter {
   }
 }
 
-function addContainer() {
-  let container = document.createElement('div');
-  container.id = 'kbm-container';
-  container.appendChild(getButtons());
-  container.appendChild(getStdoutArea());
-
-  document.getElementById('annotations').appendChild(container);
-}
-
-function getButtons() {
-  const container = document.createElement('div');
-  container.id = 'kbm-btns';
-  container.appendChild(getDeleteButton())
-  container.appendChild(getExportButton())
-
-  return container;
-}
-
-function getDeleteButton() {
-  let node = document.createElement('button');
-  node.id = 'kbm-btn-delete';
-  node.setAttribute('type', 'button');
-  node.innerHTML = 'Delete';
-  node.addEventListener('click', deleter.handleDeleteHighlights.bind(deleter), false);
-  node.classList.add('kbm-btn');
-
-  return node;
-}
-
-function getExportButton() {
-  let node = document.createElement('button');
-  node.id = 'kbm-btn-export';
-  node.setAttribute('type', 'button');
-  node.innerHTML = 'Export';
-  node.addEventListener('click', (event) => {}, false);
-  node.classList.add('kbm-btn');
-
-  return node;
-}
-
-function getStdoutArea() {
-  const textArea = document.createElement('p');
-  textArea.id = 'kbm-stdout';
-
-  const container = document.createElement('div');
-  container.appendChild(textArea);
-
-  return container;
-}
 
 
 function reportHttpPromiseResults(results) {
@@ -236,7 +243,6 @@ function groupBy(xs, key) {
 
 const dataProvider = new DataProvider();
 const deleter = new Deleter(dataProvider);
-
-const ui = new UserInterface();
+const ui = new UserInterface(deleter);
 ui.addStyle();
-addContainer();
+ui.addContainer();
