@@ -56,7 +56,7 @@ class UserInterface {
     }
   }
 
-  addContainer() {
+  addUi() {
     let container = document.createElement('div');
     container.id = 'kbm-container';
     container.appendChild(this.getButtons());
@@ -245,4 +245,4 @@ const dataProvider = new DataProvider();
 const deleter = new Deleter(dataProvider);
 const ui = new UserInterface(deleter);
 ui.addStyle();
-ui.addContainer();
+ui.addUi();
