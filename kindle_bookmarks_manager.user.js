@@ -52,6 +52,10 @@ class UserInterface {
 }
 
 class DataProvider {
+  getCurrentBookTitle() {
+    return document.querySelector('h3.kp-notebook-metadata').innerText;
+  }
+
   getHighlights() {
     const nodes = document.querySelectorAll(`[id^="highlight-"]`);
     const ids = Array.from(nodes).map(n => n.id.replace('highlight-', ''));
@@ -71,7 +75,6 @@ class DataProvider {
 
     return antiCsrfToken
   }
-
 }
 
 class Deleter {
@@ -129,14 +132,10 @@ function getStdoutArea() {
 }
 
 function handleDeleteHighlights(event) {
-  var result = confirm(`Do you want to remove ${dataProvider.getHighlights().length} highlights and ${dataProvider.getNotes().length} notes from\n"${getCurrentBookTitle()}"?`);
+  var result = confirm(`Do you want to remove ${dataProvider.getHighlights().length} highlights and ${dataProvider.getNotes().length} notes from\n"${dataProvider.getCurrentBookTitle()}"?`);
   if (result == true) {
     deleteAll();
   }
-}
-
-function getCurrentBookTitle() {
-  return document.querySelector('h3.kp-notebook-metadata').innerText;
 }
 
 async function deleteAll() {
