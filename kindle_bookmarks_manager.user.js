@@ -78,7 +78,80 @@ class DataProvider {
 }
 
 class Deleter {
+  dataProvider;
 
+  constructor(dataProvider) {
+    this.dataProvider = dataProvider;
+  }
+
+  handleDeleteHighlights(event) {
+    var result = confirm(`Do you want to remove ${this.dataProvider.getHighlights().length} highlights and ${this.dataProvider.getNotes().length} notes from\n"${this.dataProvider.getCurrentBookTitle()}"?`);
+    if (result == true) {
+      this.deleteAll();
+    }
+  }
+
+  async deleteAll() {
+    print("Sending highlights deletion requests...");
+    const highlight_deletion_promises = this.deleteHighlights();
+
+    print("Sending notes deletion requests...");
+    const note_deletion_promises = this.deleteNotes();
+
+    await Promise.allSettled(highlight_deletion_promises)
+      .then(results => {
+        print("Highlights deletion report:");
+        reportHttpPromiseResults(results);
+      });
+
+    await Promise.allSettled(note_deletion_promises)
+      .then(results => {
+        print("Notes deletion report:");
+        reportHttpPromiseResults(results);
+      });
+  }
+
+  deleteHighlights() {
+    const highlightIds = this.dataProvider.getHighlights();
+    const promises = highlightIds.map(id => this.deleteHighlight(id));
+    return promises;
+  }
+
+  deleteNotes() {
+    const noteIds = this.dataProvider.getNotes();
+    const promises = noteIds.map(id => this.deleteNote(id));
+    return promises;
+  }
+
+  deleteNote(noteId) {
+    const itemUrl = 'https://read.amazon.com/notebook/note?noteId=' + noteId;
+    return this.deleteItem(itemUrl);
+  }
+
+  deleteHighlight(highlightId) {
+    const itemUrl = 'https://read.amazon.com/notebook/highlight?highlightId=' + highlightId;
+    return this.deleteItem(itemUrl);
+  }
+
+  deleteItem(itemUrl) {
+    return new Promise((resolve, reject) => {
+      GM.xmlHttpRequest({
+        method: 'DELETE',
+        url: itemUrl,
+        headers: {
+          'Origin': "https://read.amazon.com",
+          'Referrer': "https://read.amazon.com/notebook",
+          'anti-csrftoken-a2z': this.dataProvider.getAntiCsrfToken(),
+        },
+        onload: function (response) {
+          resolve([itemUrl, response.status]);
+        },
+        onerror: function (error) {
+          reject([itemUrl, error]);
+        }
+      });
+    });
+  }
 }
 
 function addContainer() {
@@ -104,7 +177,7 @@ function getDeleteButton() {
   node.id = 'kbm-btn-delete';
   node.setAttribute('type', 'button');
   node.innerHTML = 'Delete';
-  node.addEventListener('click', handleDeleteHighlights, false);
+  node.addEventListener('click', deleter.handleDeleteHighlights.bind(deleter), false);
   node.classList.add('kbm-btn');
 
   return node;
@@ -131,74 +204,6 @@ function getStdoutArea() {
   return container;
 }
 
-function handleDeleteHighlights(event) {
-  var result = confirm(`Do you want to remove ${dataProvider.getHighlights().length} highlights and ${dataProvider.getNotes().length} notes from\n"${dataProvider.getCurrentBookTitle()}"?`);
-  if (result == true) {
-    deleteAll();
-  }
-}
-
-async function deleteAll() {
-  print("Sending highlights deletion requests...");
-  const highlight_deletion_promises = deleteHighlights();
-
-  print("Sending notes deletion requests...");
-  const note_deletion_promises = deleteNotes();
-
-  await Promise.allSettled(highlight_deletion_promises)
-    .then(results => {
-      print("Highlights deletion report:");
-      reportHttpPromiseResults(results);
-    });
-
-  await Promise.allSettled(note_deletion_promises)
-    .then(results => {
-      print("Notes deletion report:");
-      reportHttpPromiseResults(results);
-    });
-}
-
-function deleteHighlights() {
-  const highlightIds = dataProvider.getHighlights();
-  const promises = highlightIds.map(id => deleteHighlight(id));
-  return promises;
-}
-
-function deleteNotes() {
-  const noteIds = dataProvider.getNotes();
-  const promises = noteIds.map(id => deleteNote(id));
-  return promises;
-}
-
-function deleteNote(noteId) {
-  const itemUrl = 'https://read.amazon.com/notebook/note?noteId=' + noteId;
-  return deleteItem(itemUrl);
-}
-
-function deleteHighlight(highlightId) {
-  const itemUrl = 'https://read.amazon.com/notebook/highlight?highlightId=' + highlightId;
-  return deleteItem(itemUrl);
-}
-
-function deleteItem(itemUrl) {
-  return new Promise((resolve, reject) => {
-    GM.xmlHttpRequest({
-      method: 'DELETE',
-      url: itemUrl,
-      headers: {
-        'Origin': "https://read.amazon.com",
-        'Referrer': "https://read.amazon.com/notebook",
-        'anti-csrftoken-a2z': dataProvider.getAntiCsrfToken(),
-      },
-      onload: function(response) {
-        resolve([itemUrl, response.status]);
-      },
-      onerror: function(error) {
-        reject([itemUrl, error]);
-      }
-    });
-  });
-}
 
 function reportHttpPromiseResults(results) {
   const successValues = results
@@ -230,6 +235,8 @@ function groupBy(xs, key) {
 };
 
 const dataProvider = new DataProvider();
+const deleter = new Deleter(dataProvider);
+
 const ui = new UserInterface();
 ui.addStyle();
 addContainer();
