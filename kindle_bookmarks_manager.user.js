@@ -148,16 +148,16 @@ class Deleter {
   handleDeleteHighlights(event) {
     var result = confirm(`Do you want to remove ${this.dataProvider.getHighlights().length} highlights and ${this.dataProvider.getNotes().length} notes from\n"${this.dataProvider.getCurrentBookTitle()}"?`);
     if (result == true) {
-      this.deleteAll();
+      this.#deleteAll();
     }
   }
 
-  async deleteAll() {
+  async #deleteAll() {
     print("Sending highlights deletion requests...");
-    const highlight_deletion_promises = this.deleteHighlights();
+    const highlight_deletion_promises = this.#deleteHighlights();
 
     print("Sending notes deletion requests...");
-    const note_deletion_promises = this.deleteNotes();
+    const note_deletion_promises = this.#deleteNotes();
 
     await Promise.allSettled(highlight_deletion_promises)
       .then(results => {
@@ -172,29 +172,29 @@ class Deleter {
       });
   }
 
-  deleteHighlights() {
+  #deleteHighlights() {
     const highlightIds = this.dataProvider.getHighlights();
-    const promises = highlightIds.map(id => this.deleteHighlight(id));
+    const promises = highlightIds.map(id => this.#deleteHighlight(id));
     return promises;
   }
 
-  deleteNotes() {
+  #deleteNotes() {
     const noteIds = this.dataProvider.getNotes();
-    const promises = noteIds.map(id => this.deleteNote(id));
+    const promises = noteIds.map(id => this.#deleteNote(id));
     return promises;
   }
 
-  deleteNote(noteId) {
+  #deleteNote(noteId) {
     const itemUrl = 'https://read.amazon.com/notebook/note?noteId=' + noteId;
-    return this.deleteItem(itemUrl);
+    return this.#deleteItem(itemUrl);
   }
 
-  deleteHighlight(highlightId) {
+  #deleteHighlight(highlightId) {
     const itemUrl = 'https://read.amazon.com/notebook/highlight?highlightId=' + highlightId;
-    return this.deleteItem(itemUrl);
+    return this.#deleteItem(itemUrl);
   }
 
-  deleteItem(itemUrl) {
+  #deleteItem(itemUrl) {
     return new Promise((resolve, reject) => {
       GM.xmlHttpRequest({
         method: 'DELETE',
@@ -214,8 +214,6 @@ class Deleter {
     });
   }
 }
-
-
 
 function reportHttpPromiseResults(results) {
   const successValues = results
