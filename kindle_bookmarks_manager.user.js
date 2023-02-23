@@ -162,13 +162,13 @@ class Deleter {
     await Promise.allSettled(highlight_deletion_promises)
       .then(results => {
         print("Highlights deletion report:");
-        reportHttpPromiseResults(results);
+        this.#reportHttpPromiseResults(results);
       });
 
     await Promise.allSettled(note_deletion_promises)
       .then(results => {
         print("Notes deletion report:");
-        reportHttpPromiseResults(results);
+        this.#reportHttpPromiseResults(results);
       });
   }
 
@@ -213,23 +213,23 @@ class Deleter {
       });
     });
   }
-}
 
-function reportHttpPromiseResults(results) {
-  const successValues = results
+  #reportHttpPromiseResults(results) {
+    const successValues = results
       .filter(r => r.status === 'fulfilled')
       .map(r => r.value);
-  const resultsByStatusCode = groupBy(successValues, 1);
-  for (let status_code in resultsByStatusCode) {
-    print(`* Status [${status_code}]: ${resultsByStatusCode[status_code].length}`);
+    const resultsByStatusCode = groupBy(successValues, 1);
+    for (let status_code in resultsByStatusCode) {
+      print(`* Status [${status_code}]: ${resultsByStatusCode[status_code].length}`);
+    }
+
+    const failureResults = results.filter(r => r.status === 'rejected');
+    print(`* HTTP failures: ${failureResults.length}`)
+    failureResults.forEach(s => print(`** ${r.value[0]}[error: ${r.value[1]}]`))
+
+    console.log("Reporting HTTP promise results:");
+    console.log(results);
   }
-
-  const failureResults = results.filter(r => r.status === 'rejected');
-  print(`* HTTP failures: ${failureResults.length}`)
-  failureResults.forEach(s => print(`** ${r.value[0]}[error: ${r.value[1]}]`))
-
-  console.log("Reporting HTTP promise results:");
-  console.log(results);
 }
 
 function print(message) {
