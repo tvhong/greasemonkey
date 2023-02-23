@@ -28,8 +28,14 @@ function addStyle() {
       color: white;
       background: black;
     }
+    #kbm-btns {
+      display: flex;
+      justify-content: center;
+    }
     .kbm-btn {
       cursor: pointer;
+      padding: 5px;
+      margin: 7px;
     }
 `;
 
@@ -46,27 +52,51 @@ function addStyle() {
 function addContainer() {
   let container = document.createElement('div');
   container.id = 'kbm-container';
-  container.appendChild(getDeleteHighlightsButton())
+  container.appendChild(getButtons());
   container.appendChild(getStdoutArea());
 
   document.getElementById('annotations').appendChild(container);
 }
 
-function getDeleteHighlightsButton() {
+function getButtons() {
+  const container = document.createElement('div');
+  container.id = 'kbm-btns';
+  container.appendChild(getDeleteButton())
+  container.appendChild(getExportButton())
+
+  return container;
+}
+
+function getDeleteButton() {
   let node = document.createElement('button');
-  node.id = 'kbm-delete-highlights';
+  node.id = 'kbm-btn-delete';
   node.setAttribute('type', 'button');
-  node.innerHTML = 'Delete Highlights';
+  node.innerHTML = 'Delete';
   node.addEventListener('click', handleDeleteHighlights, false);
   node.classList.add('kbm-btn');
 
   return node;
 }
 
-function getStdoutArea() {
-  const node = document.createElement('p');
-  node.id = 'kbm-stdout';
+function getExportButton() {
+  let node = document.createElement('button');
+  node.id = 'kbm-btn-export';
+  node.setAttribute('type', 'button');
+  node.innerHTML = 'Export';
+  node.addEventListener('click', (event) => {}, false);
+  node.classList.add('kbm-btn');
+
   return node;
+}
+
+function getStdoutArea() {
+  const textArea = document.createElement('p');
+  textArea.id = 'kbm-stdout';
+
+  const container = document.createElement('div');
+  container.appendChild(textArea);
+
+  return container;
 }
 
 function handleDeleteHighlights(event) {
