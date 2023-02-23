@@ -169,16 +169,11 @@ class Exporter {
   handleEvent(event) {
     const noteHighlightPairs = this.#dataProvider.getNoteHighlightPairs();
     console.log(noteHighlightPairs);
-    console.log("poop8");
     console.log(this.#formatForAnki(noteHighlightPairs));
-    console.log("poop9");
   }
 
   #formatForAnki(noteHighlightPairs) {
-    console.log("poop1");
     const bookTitle = this.#dataProvider.getCurrentBookTitle();
-    console.log(bookTitle);
-    console.log("poop2");
     const cards = noteHighlightPairs.map(p => {
       return {
         'title': bookTitle + '/' + this.#sanitizeString(p[0]),
@@ -188,21 +183,15 @@ class Exporter {
         'priority': '6'
       };
     })
-    console.log("poop3");
-    console.log(cards);
 
     return cards.map(c => this.#formatCard(c)).join('\n');
   }
 
   #formatCard(card) {
-    console.log("poop5");
-    const s = [card.title, card.text, card.source, card.priority].join('\t');
-    console.log(s);
-    return s;
+    return [card.title, card.text, card.source, card.priority].join('\t');
   }
 
   #sanitizeString(s) {
-    console.log("poop7");
     return s ? s.replace(this.#SEPARATOR, '-') : this.#generateRandomPlaceholder();
   }
 
