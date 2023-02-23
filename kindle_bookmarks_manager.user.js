@@ -176,7 +176,7 @@ class Exporter {
     const bookTitle = this.#dataProvider.getCurrentBookTitle();
     const cards = noteHighlightPairs.map(p => {
       return {
-        'title': bookTitle + '/' + this.#sanitizeString(p[0]),
+        'title': bookTitle + ' / ' + this.#sanitizeString(p[0]),
         'text': this.#sanitizeString(p[1]),
         'source': this.#sanitizeString(bookTitle),
         // TODO: prompt for an input
