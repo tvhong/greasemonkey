@@ -51,6 +51,23 @@ class UserInterface {
   }
 }
 
+class DataProvider {
+  getHighlights() {
+    const nodes = document.querySelectorAll(`[id^="highlight-"]`);
+    const ids = Array.from(nodes).map(n => n.id.replace('highlight-', ''));
+    return ids;
+  }
+
+  getNotes() {
+    const nodes = document.querySelectorAll(`[id^="note-QTF"]`);
+    const ids = Array.from(nodes).map(n => n.id.replace('note-', ''));
+    return ids;
+  }
+}
+
+class Deleter {
+
+}
 
 function addContainer() {
   let container = document.createElement('div');
@@ -103,7 +120,7 @@ function getStdoutArea() {
 }
 
 function handleDeleteHighlights(event) {
-  var result = confirm(`Do you want to remove ${getHighlights().length} highlights and ${getNotes().length} notes from\n"${getCurrentBookTitle()}"?`);
+  var result = confirm(`Do you want to remove ${dataProvider.getHighlights().length} highlights and ${dataProvider.getNotes().length} notes from\n"${getCurrentBookTitle()}"?`);
   if (result == true) {
     deleteAll();
   }
@@ -134,27 +151,15 @@ async function deleteAll() {
 }
 
 function deleteHighlights() {
-  const highlightIds = getHighlights();
+  const highlightIds = dataProvider.getHighlights();
   const promises = highlightIds.map(id => deleteHighlight(id));
   return promises;
 }
 
 function deleteNotes() {
-  const noteIds = getNotes();
+  const noteIds = dataProvider.getNotes();
   const promises = noteIds.map(id => deleteNote(id));
   return promises;
-}
-
-function getHighlights() {
-  const nodes = document.querySelectorAll(`[id^="highlight-"]`);
-  const ids = Array.from(nodes).map(n => n.id.replace('highlight-', ''));
-  return ids;
-}
-
-function getNotes() {
-  const nodes = document.querySelectorAll(`[id^="note-QTF"]`);
-  const ids = Array.from(nodes).map(n => n.id.replace('note-', ''));
-  return ids;
 }
 
 function deleteNote(noteId) {
@@ -224,6 +229,7 @@ function groupBy(xs, key) {
   }, {});
 };
 
+const dataProvider = new DataProvider();
 const ui = new UserInterface();
 ui.addStyle();
 addContainer();
