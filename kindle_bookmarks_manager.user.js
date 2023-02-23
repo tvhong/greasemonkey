@@ -63,6 +63,15 @@ class DataProvider {
     const ids = Array.from(nodes).map(n => n.id.replace('note-', ''));
     return ids;
   }
+
+  getAntiCsrfToken() {
+    if (!antiCsrfToken) {
+      antiCsrfToken = document.querySelector('input[name=anti-csrftoken-a2z]').getAttribute('value');
+    }
+
+    return antiCsrfToken
+  }
+
 }
 
 class Deleter {
@@ -180,7 +189,7 @@ function deleteItem(itemUrl) {
       headers: {
         'Origin': "https://read.amazon.com",
         'Referrer': "https://read.amazon.com/notebook",
-        'anti-csrftoken-a2z': getAntiCsrfToken(),
+        'anti-csrftoken-a2z': dataProvider.getAntiCsrfToken(),
       },
       onload: function(response) {
         resolve([itemUrl, response.status]);
@@ -190,14 +199,6 @@ function deleteItem(itemUrl) {
       }
     });
   });
-}
-
-function getAntiCsrfToken() {
-  if (!antiCsrfToken) {
-    antiCsrfToken = document.querySelector('input[name=anti-csrftoken-a2z]').getAttribute('value');
-  }
-
-  return antiCsrfToken
 }
 
 function reportHttpPromiseResults(results) {
