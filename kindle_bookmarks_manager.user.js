@@ -40,10 +40,10 @@ class UserInterface {
     }
   `;
 
-  deleter;
+  #deleter;
 
   constructor(deleter) {
-    this.deleter = deleter;
+    this.#deleter = deleter;
   }
 
   addStyle() {
@@ -57,35 +57,40 @@ class UserInterface {
   }
 
   addUi() {
-    let container = document.createElement('div');
-    container.id = 'kbm-container';
-    container.appendChild(this.getButtons());
-    container.appendChild(this.getStdoutArea());
-
-    document.getElementById('annotations').appendChild(container);
+    document.getElementById('annotations')
+        .appendChild(this.#getContainer());
   }
 
-  getButtons() {
-    const container = document.createElement('div');
-    container.id = 'kbm-btns';
-    container.appendChild(this.getDeleteButton())
-    container.appendChild(this.getExportButton())
+  #getContainer() {
+    let container = document.createElement('div');
+    container.id = 'kbm-container';
+    container.appendChild(this.#getButtons());
+    container.appendChild(this.#getStdoutArea());
 
     return container;
   }
 
-  getDeleteButton() {
+  #getButtons() {
+    const container = document.createElement('div');
+    container.id = 'kbm-btns';
+    container.appendChild(this.#getDeleteButton())
+    container.appendChild(this.#getExportButton())
+
+    return container;
+  }
+
+  #getDeleteButton() {
     let node = document.createElement('button');
     node.id = 'kbm-btn-delete';
     node.setAttribute('type', 'button');
     node.innerHTML = 'Delete';
-    node.addEventListener('click', this.deleter.handleDeleteHighlights.bind(this.deleter), false);
+    node.addEventListener('click', this.#deleter.handleDeleteHighlights.bind(this.#deleter), false);
     node.classList.add('kbm-btn');
 
     return node;
   }
 
-  getExportButton() {
+  #getExportButton() {
     let node = document.createElement('button');
     node.id = 'kbm-btn-export';
     node.setAttribute('type', 'button');
@@ -96,7 +101,7 @@ class UserInterface {
     return node;
   }
 
-  getStdoutArea() {
+  #getStdoutArea() {
     const textArea = document.createElement('p');
     textArea.id = 'kbm-stdout';
 
