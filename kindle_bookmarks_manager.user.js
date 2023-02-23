@@ -117,6 +117,9 @@ class UserInterface {
 class DataProvider {
   getCurrentBookTitle() {
     return document.querySelector('h3.kp-notebook-metadata').innerText;
+    //assert(title, "Failed to get the book's title.");
+
+    //return title;
   }
 
   getHighlights() {
@@ -155,6 +158,8 @@ class DataProvider {
 }
 
 class Exporter {
+  #PLACE_HOLDER_LENGTH = 40;
+  #SEPARATOR = '\t';
   #dataProvider;
   
   constructor(dataProvider) {
@@ -162,7 +167,56 @@ class Exporter {
   }
 
   handleEvent(event) {
-    console.log(this.#dataProvider.getNoteHighlightPairs());
+    const noteHighlightPairs = this.#dataProvider.getNoteHighlightPairs();
+    console.log(noteHighlightPairs);
+    console.log("poop8");
+    console.log(this.#formatForAnki(noteHighlightPairs));
+    console.log("poop9");
+  }
+
+  #formatForAnki(noteHighlightPairs) {
+    console.log("poop1");
+    const bookTitle = this.#dataProvider.getCurrentBookTitle();
+    console.log(bookTitle);
+    console.log("poop2");
+    const cards = noteHighlightPairs.map(p => {
+      return {
+        'title': bookTitle + '/' + this.#sanitizeString(p[0]),
+        'text': this.#sanitizeString(p[1]),
+        'source': this.#sanitizeString(bookTitle),
+        // TODO: prompt for an input
+        'priority': '6'
+      };
+    })
+    console.log("poop3");
+    console.log(cards);
+
+    return cards.map(c => this.#formatCard(c)).join('\n');
+  }
+
+  #formatCard(card) {
+    console.log("poop5");
+    const s = [card.title, card.text, card.source, card.priority].join('\t');
+    console.log(s);
+    return s;
+  }
+
+  #sanitizeString(s) {
+    console.log("poop7");
+    return s ? s.replace(this.#SEPARATOR, '-') : this.#generateRandomPlaceholder();
+  }
+
+  #generateRandomPlaceholder() {
+    // StackOverflow: https://stackoverflow.com/a/1349426
+    let result = '';
+    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < this.#PLACE_HOLDER_LENGTH) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
   }
 }
 
@@ -269,6 +323,7 @@ function print(message) {
 }
 
 function groupBy(xs, key) {
+  // Copied from StackOverflow: https://stackoverflow.com/a/34890276
   return xs.reduce(function(rv, x) {
     (rv[x[key]] = rv[x[key]] || []).push(x);
     return rv;
