@@ -160,16 +160,34 @@ class DataProvider {
 class Exporter {
   #PLACE_HOLDER_LENGTH = 40;
   #SEPARATOR = '\t';
+
+  #downloadNode;
   #dataProvider;
   
   constructor(dataProvider) {
     this.#dataProvider = dataProvider;
+
+    // Copied from https://stackoverflow.com/a/64500313
+    this.#downloadNode = document.createElement('a');
+    document.body.appendChild(this.#downloadNode);
+    this.#downloadNode.style = 'display: none';
   }
 
   handleEvent(event) {
     const noteHighlightPairs = this.#dataProvider.getNoteHighlightPairs();
-    console.log(noteHighlightPairs);
-    console.log(this.#formatForAnki(noteHighlightPairs));
+    const ankiText = this.#formatForAnki(noteHighlightPairs)
+    console.log(ankiText);
+
+    this.#downloadFile("kbm_output.txt", ankiText);
+  }
+
+  #downloadFile(filename, text) {
+    // Copied from https://stackoverflow.com/a/64500313
+    const objUrl = URL.createObjectURL(new Blob([text], {type: "text/plain"}));
+    this.#downloadNode.href = objUrl;
+    this.#downloadNode.download = filename;
+    this.#downloadNode.click();
+    URL.revokeObjectURL(objUrl);
   }
 
   #formatForAnki(noteHighlightPairs) {
