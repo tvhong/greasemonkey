@@ -319,10 +319,12 @@ function groupBy(xs, key) {
   }, {});
 };
 
-const dataProvider = new DataProvider();
-const exporter = new Exporter(dataProvider);
-const deleter = new Deleter(dataProvider);
+window.addEventListener('load', function() {
+  const dataProvider = new DataProvider();
+  const exporter = new Exporter(dataProvider);
+  const deleter = new Deleter(dataProvider);
 
-const ui = new UserInterface(exporter, deleter);
-ui.addStyle();
-ui.addUi();
+  const ui = new UserInterface(exporter, deleter);
+  ui.addStyle();
+  ui.addUi();
+}, false);
