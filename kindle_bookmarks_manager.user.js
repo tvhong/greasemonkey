@@ -180,6 +180,10 @@ class Exporter {
     console.log(ankiText);
 
     this.#downloadFile("kbm_output.txt", ankiText);
+
+    print("You can now import the file in Anki with");
+    print("File > Import");
+    print("Enjoy!");
   }
 
   #promptForPriority() {
