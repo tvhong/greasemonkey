@@ -173,11 +173,17 @@ class Exporter {
   }
 
   handleEvent(event) {
+    const cardPriority = this.#promptForPriority();
+
     const noteHighlightPairs = this.#dataProvider.getNoteHighlightPairs();
-    const ankiText = this.#formatForAnki(noteHighlightPairs)
+    const ankiText = this.#formatForAnki(noteHighlightPairs, cardPriority)
     console.log(ankiText);
 
     this.#downloadFile("kbm_output.txt", ankiText);
+  }
+
+  #promptForPriority() {
+    return prompt("What are the cards' priority?", "5")
   }
 
   #downloadFile(filename, text) {
@@ -189,15 +195,14 @@ class Exporter {
     URL.revokeObjectURL(objUrl);
   }
 
-  #formatForAnki(noteHighlightPairs) {
+  #formatForAnki(noteHighlightPairs, cardPriority) {
     const bookTitle = this.#dataProvider.getCurrentBookTitle();
     const cards = noteHighlightPairs.map(p => {
       return {
         'title': bookTitle + ' / ' + this.#sanitizeString(p[0]),
         'text': this.#sanitizeString(p[1]),
         'source': this.#sanitizeString(bookTitle),
-        // TODO: prompt for an input
-        'priority': '6'
+        'priority': cardPriority
       };
     })
 
