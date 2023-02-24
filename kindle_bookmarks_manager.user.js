@@ -8,9 +8,6 @@
 // @grant       GM.xmlHttpRequest
 // ==/UserScript==
 
-let antiCsrfToken = '';
-
-
 class UserInterface {
   CSS_STYLE = `
     #kbm-container {
@@ -115,6 +112,8 @@ class UserInterface {
 }
 
 class DataProvider {
+  #antiCsrfToken;
+
   getCurrentBookTitle() {
     return document.querySelector('h3.kp-notebook-metadata').innerText;
     //assert(title, "Failed to get the book's title.");
@@ -149,11 +148,11 @@ class DataProvider {
   }
 
   getAntiCsrfToken() {
-    if (!antiCsrfToken) {
-      antiCsrfToken = document.querySelector('input[name=anti-csrftoken-a2z]').getAttribute('value');
+    if (!this.#antiCsrfToken) {
+      this.#antiCsrfToken = document.querySelector('input[name=anti-csrftoken-a2z]').getAttribute('value');
     }
 
-    return antiCsrfToken
+    return this.#antiCsrfToken
   }
 }
 
