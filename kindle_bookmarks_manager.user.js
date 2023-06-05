@@ -72,8 +72,8 @@ class UserInterface {
   #getButtons() {
     const container = document.createElement('div');
     container.id = 'kbm-btns';
-    container.appendChild(this.#getDeleteButton())
     container.appendChild(this.#getExportButton())
+    container.appendChild(this.#getDeleteButton())
 
     return container;
   }
