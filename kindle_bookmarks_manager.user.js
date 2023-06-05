@@ -162,7 +162,7 @@ class Exporter {
 
   #downloadNode;
   #dataProvider;
-  
+
   constructor(dataProvider) {
     this.#dataProvider = dataProvider;
 
@@ -203,7 +203,7 @@ class Exporter {
     const bookTitle = this.#dataProvider.getCurrentBookTitle();
     const cards = noteHighlightPairs.map(p => {
       return {
-        'title': bookTitle + ' / ' + this.#sanitizeString(p[0]),
+        'title': bookTitle + ' / ' + this.#sanitizeString(p[0], this.#getStringHash(p[1])),
         'text': this.#sanitizeString(p[1]),
         'source': this.#sanitizeString(bookTitle),
         'priority': cardPriority
@@ -217,21 +217,14 @@ class Exporter {
     return [card.title, card.text, card.source, card.priority].join('\t');
   }
 
-  #sanitizeString(s) {
-    return s ? s.replace(this.#SEPARATOR, '-') : this.#generateRandomPlaceholder();
+  #sanitizeString(s, placeholder = '') {
+    return s ? s.replace(this.#SEPARATOR, '-') : placeholder;
   }
 
-  #generateRandomPlaceholder() {
-    // StackOverflow: https://stackoverflow.com/a/1349426
-    let result = '';
-    const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    let counter = 0;
-    while (counter < this.#PLACE_HOLDER_LENGTH) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-      counter += 1;
-    }
-    return result;
+  #getStringHash(str) {
+    // https://gist.github.com/hyamamoto/fd435505d29ebfa3d9716fd2be8d42f0?permalink_comment_id=4261728#gistcomment-4261728
+    let h = [...str].reduce((s, c) => Math.imul(31, s) + c.charCodeAt(0) | 0, 0);
+    return h.toString();
   }
 }
 
@@ -354,3 +347,4 @@ window.addEventListener('load', function() {
   ui.addStyle();
   ui.addUi();
 }, false);
+
